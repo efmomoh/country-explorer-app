@@ -1,0 +1,91 @@
+/* ==========================================================
+Footer Component Styles
+
+Purpose:
+---------
+Styles the dynamically generated footer component using CSS nesting.
+========================================================== */
+
+.site-footer {
+    background-color: var(--primary-color);
+    color: var(--surface-color);
+    padding: 3rem 1.5rem 1rem;
+    margin-top: 3rem;
+
+    /* Footer Content Layout */
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    /* Footer Headings */
+    h2,
+    h3 {
+        font-family: var(--heading-font);
+        margin-bottom: 1rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        color: var(--surface-color);
+    }
+
+    /* Footer Paragraphs */
+    p {
+        font-family: var(--body-font);
+        line-height: 1.6;
+    }
+
+    /* Footer Links */
+    .footer-links {
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        a {
+            color: var(--light-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+
+            &:hover,
+            &:focus {
+                color: var(--secondary-color);
+                text-decoration: underline;
+            }
+        }
+    }
+
+    /* Footer Bottom Section */
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 2rem auto 0;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        text-align: center;
+    }
+}
+
+/* ==================================================
+MEDIA QUERY - Tablet Layout
+================================================== */
+@media screen and (min-width: 768px) {
+    .site-footer {
+        .footer-content {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
