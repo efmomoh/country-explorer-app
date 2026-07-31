@@ -1,13 +1,178 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>country-explorer-app</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Country Explorer App</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+
+<body>
+  <!--
+      ===========================================================
+      HEADER
+      Contains the application logo and navigation links.
+      ===========================================================
+  -->
+  <header class="site-header">
+    <!-- Main Navigation -->
+    <nav class="navbar" aria-label="Primary Navigation">
+      <!-- Application Logo -->
+      <a href="#" class="logo">🌍 Country Explorer</a>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Favorites</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!--
+      ===========================================================
+      MAIN CONTENT: Every section of our application will be placed here.
+      ===========================================================
+  -->
+  <main>
+
+    <!-- ======================================================
+    HERO SECTION: Introduces the application and provides the main search controls.
+    ====================================================== -->
+    <section class="hero">
+      <div class="hero-content">
+
+        <!-- Main Heading -->
+        <h1>Explorer the World One Country at a Time</h1>
+
+        <!-- Description -->
+        <p>Discover countries around the world by searching
+          for their names or browsing by region.
+        </p>
+      </div>
+
+      <!-- ==================================================
+      SEARCH FORM: Accessible search controls.
+      ================================================== -->
+      <form action="#" class="search-form" aria-label="Country Search Form">
+
+        <!-- Country Search  -->
+        <label for="country-search" class="visually-hidden">Search for a Country</label>
+        <input type="text" name="country" id="country-search" placeholder="Search for a country..." autocomplete="off">
+
+        <!-- Search buttton  -->
+        <button type="submit">Search</button>
+
+        <!-- Region filter  -->
+        <label for="region-filter" class="visually-hidden">Filter by Region</label>
+        <select name="region" id="region-filter">
+          <option value="" disabled selected>Select Region</option>
+          <option value="africa">Africa</option>
+          <option value="americas">Americas</option>
+          <option value="asia">Asia</option>
+          <option value="europe">Europe</option>
+          <option value="oceania">Oceania</option>
+        </select>
+      </form>
+    </section>
+
+
+    <!-- ==========================================================
+        FEATURED COUNTRIES SECTION: This section will eventually display country data
+        retrieved from the REST Countries API. 
+        For now, we use static placeholder information to build the layout.
+        ========================================================== -->
+    <section class="featured-countries">
+
+      <!-- Section Heading -->
+      <h2>Featured Countried</h2>
+
+      <!-- Country Cards Container -->
+      <div class="country-grid">
+
+        <!-- Country Card 1 -->
+        <article class="country-card">
+          <!-- Placeholder Flag -->
+          <img src="https://flagcdn.com/w320/lr.png" alt="Flag of Liberia">
+
+          <div class="country-info">
+            <h3>LR, Liberia</h3>
+            <p>Capital: Monrovia</p>
+            <button>View Details</button>
+          </div>
+        </article>
+
+        <!-- Country Card 2 -->
+        <article class="country-card">
+          <!-- Placeholder Flag -->
+          <img src="https://flagcdn.com/w320/us.png" alt="Flag of the United States of America">
+
+          <div class="country-info">
+            <h3>USA, United States of America</h3>
+            <p>Capital: Washington DC</p>
+            <button>View Details</button>
+          </div>
+        </article>
+
+        <!-- Country Card 2 -->
+        <article class="country-card">
+          <!-- Placeholder Flag -->
+          <img src="https://flagcdn.com/w320/ca.png" alt="Flag of Canada">
+
+          <div class="country-info">
+            <h3>CA, Canada</h3>
+            <p>Capital: Ottawa</p>
+            <button>View Details</button>
+          </div>
+        </article>
+        <!-- Country Card 3 -->
+        <article class="country-card">
+          <!-- Placeholder Flag -->
+          <img src="https://flagcdn.com/w320/gb.png" alt="Flag of Great Britain">
+
+          <div class="country-info">
+            <h3>UK, Great Britain</h3>
+            <p>Capital: London</p>
+            <button>View Details</button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================
+    FOOTER: Provides application information and navigation support.
+    ========================================================== -->
+  <footer class="site-footer">
+
+    <!-- Application Information -->
+    <div class="footer-content">
+      <h2>🌍 Country Explorer</h2>
+      <p>Explore countries around the world and discover information about cultures,
+        geography, and locations.
+      </p>
+    </div>
+
+    <!-- Footer Navigation -->
+    <nav class="footer-navigation" aria-label="Footer Navigation">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Favorites</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </nav>
+
+    <p class="copyright">
+      @ 2026 Country Explorer App. All Rights Reserved.
+    </p>
+    <p class="license">MIT Licensed.</p>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script type="module" src="/src/js/main.js"></script>
+</body>
+
 </html>
