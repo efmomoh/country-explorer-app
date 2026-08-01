@@ -47,7 +47,7 @@ export default class CountryAPI {
     /*
     Private helper method
     Purpose:
-     Avoid repeating fetch code.
+    Avoid repeating fetch code.
     Every API method will use this.
     */
     async request(endpoint) {

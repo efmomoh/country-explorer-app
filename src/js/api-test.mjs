@@ -23,7 +23,8 @@ try {
 
     // console.log("API connection successful");
     // console.log(JSON.stringify(country, null, 2));
-} catch (error) {
+
     // eslint-disable-next-line
+} catch (error) {
     // console.error(error.message);
 }
