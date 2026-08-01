@@ -132,16 +132,17 @@ export default class CountryExplorerApp {
         if (this.searchForm) {
             this.searchForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
-                console.log('Search submitted');
+                // console.log('Search submitted');
                 const searchValue = this.searchInput.value.trim();
-                console.log('Search value:', searchValue);
+                // console.log('Search value:', searchValue);
                 if (!searchValue) {
                     return;
                 }
 
                 const results =
                     await this.countrySearch.searchByName(searchValue);
-                console.log('Search results:', results);
+                return results; //may remove it
+                // console.log('Search results:', results);
             });
         }
     }
