@@ -1,0 +1,32 @@
+/*
+==========================================================
+Country Grid Styling
+==========================================================
+*/
+
+.country-container {
+    padding: 3rem 1.5rem;
+
+    .country-section {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        text-align: center;
+        font-family: var(--heading-font);
+        margin-bottom: 2rem;
+    }
+
+    .country-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .empty-message {
+        text-align: center;
+        grid-column: 1 / -1;
+        color: var(--text-color);
+    }
+}
