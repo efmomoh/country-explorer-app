@@ -14,17 +14,15 @@ CountryAPI is connected to components.
 */
 
 import CountryAPI from '../api/CountryAPI.mjs';
+import Country from './models/Country.mjs';
 
 const countryAPI = new CountryAPI();
 
-try {
-    // eslint-disable-next-line
-    const country = await countryAPI.getCountryByName('Canada');
+const country = await countryAPI.getCountryByName('Canada');
+// console.log("API connection successful");
+// console.log(JSON.stringify(country, null, 2));
 
-    // console.log("API connection successful");
-    // console.log(JSON.stringify(country, null, 2));
-
-    // eslint-disable-next-line
-} catch (error) {
-    // console.error(error.message);
-}
+// country models - this displays country data
+// eslint-disable-next-line
+const countryData = new Country(country);
+// console.log(countryData);

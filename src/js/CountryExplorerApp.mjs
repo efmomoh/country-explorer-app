@@ -23,6 +23,8 @@ import Hero from './components/Hero.mjs';
 import SearchSection from './components/SearchSection.mjs';
 import CountryGrid from './components/CountryGrid.mjs';
 import Footer from './components/Footer.mjs';
+import CountryAPI from '../api/CountryAPI.mjs';
+import CountrySearch from './modules/CountrySearch.mjs';
 
 export default class CountryExplorerApp {
     // Constructor: Creates the application object.
@@ -35,13 +37,14 @@ export default class CountryExplorerApp {
         this.isRunning = false;
 
         // Application Modules
-        // These will be connected later.
-        this.countryAPI = null;
+        this.countryAPI = new CountryAPI();
+        this.countrySearch = null;
         this.exchangeRateAPI = null;
         this.countryRenderer = null;
 
         // Application state
         this.initializeState();
+        this.initializeModules();
 
         // Start Application
         this.initialize();
@@ -57,16 +60,31 @@ export default class CountryExplorerApp {
         };
     }
 
+    // initialize modules
+    initializeModules() {
+        this.countrySearch = new CountrySearch(this.countryAPI, this.state);
+    }
     // Initialize Application: Controls the startup process.
 
     initialize() {
+        // Get static containers from HTML
         this.cacheDOM();
+
+        // Render components
         this.renderComponent(this.headerContainer, Header);
         this.renderComponent(this.heroContainer, Hero);
         this.renderComponent(this.searchContainer, SearchSection);
+
         this.renderComponent(this.countryContainer, CountryGrid);
+
         this.renderComponent(this.footerContainer, Footer);
+
+        // Refresh DOM references after rendering
+        this.cacheDOM();
+
+        // Attach events after elements exist
         this.bindEvents();
+
         this.isRunning = true;
     }
 
@@ -111,14 +129,32 @@ export default class CountryExplorerApp {
 
     // Bind Events: Handles user interactions.
     bindEvents() {
-        // Search Form Event - Future: This will connect to the CountryAPI class.
         if (this.searchForm) {
-            this.searchForm.addEventListener('submit', (event) => {
+            this.searchForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
-                const searchValue = this.searchInput.value;
-                console.log(searchValue);
-                // Future: Send searchValue to CountryAPI
+                // console.log('Search submitted');
+                const searchValue = this.searchInput.value.trim();
+                // console.log('Search value:', searchValue);
+                if (!searchValue) {
+                    return;
+                }
+
+                const results =
+                    await this.countrySearch.searchByName(searchValue);
+                return results; //may remove it
+                // console.log('Search results:', results);
             });
         }
     }
+    // bindEvents() {
+    //     // Search Form Event - Future: This will connect to the CountryAPI class.
+    //     if (this.searchForm) {
+    //         this.searchForm.addEventListener('submit', (event) => {
+    //             event.preventDefault();
+    //             const searchValue = this.searchInput.value;
+    //             console.log(searchValue);
+    //             // Future: Send searchValue to CountryAPI
+    //         });
+    //     }
+    // }
 }

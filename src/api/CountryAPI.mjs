@@ -5,15 +5,16 @@ CountryAPI Module
 
 Purpose:
 ---------
-Handles all communication with the REST Countries API.
+Handles communication with the REST Countries API.
 
 Responsibilities:
 -----------------
-- Connect to REST Countries API
+
 - Send API requests
+- Retrieve country data
 - Search countries by name
 - Filter countries by region
-- Handle API errors
+- Return raw API responses
 
 Author:
 Enssah Fayia Momoh
@@ -24,31 +25,19 @@ WDD330 Final Project - Country Explorer App
 ==========================================================
 */
 export default class CountryAPI {
-    /*
-    Creates the API object.
-    Stores:
-    - API base URL
-    - API authentication key
-    */
-
     constructor() {
-        // REST Countries API version 5 URL
+        // REST Countries API endpoint
         this.baseURL = 'https://api.restcountries.com/countries/v5';
-
-        /*
-        API key is stored inside .env
-        Vite exposes environment variables
-        using import.meta.env
-        */
-
+        // API key stored in environment variables
         this.apiKey = import.meta.env.VITE_COUNTRY_API_KEY;
     }
 
-    /*
-    Private helper method
-    Purpose:
-    Avoid repeating fetch code.
-    Every API method will use this.
+    /* Reusable API request handler
+    Handles:
+    - Headers
+    - Fetching
+    - Error checking
+    - JSON conversion
     */
     async request(endpoint) {
         const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -57,41 +46,32 @@ export default class CountryAPI {
             }
         });
 
-        /*
-        Check if API request failed
-        Examples:
-        401 = Unauthorized
-        403 = Forbidden
-        404 = Not Found
-        */
         if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+            throw new Error(`Country API request failed: ${response.status}`);
         }
         return await response.json();
     }
 
-    /*
-    Search country by name
-    Example:
-    Canada
-    Used by:
-    Country Search Module
-    */
-    async getCountryByName(countryName) {
-        return await this.request(`/names.common/${countryName}`);
+    /* Fetch all countries
+    Returns: Array of countries
+   */
+
+    async getAllCountries() {
+        return await this.request('/all');
     }
 
-    /*
-    Get countries by region
-    Example:
-    Africa
-    Europe
-    Asia
-    Used by:
-    Region Filter Module
+    /*  Search country by name
+    Example: Canada
+    */
+    async getCountryByName(name) {
+        return await this.request(`?q=${name}`); // we can also use this: "name.common/{name}"
+    }
+
+    /* Search countries by region
+    Example: Africa
     */
 
     async getCountriesByRegion(region) {
-        return await this.request(`/regions/${region}`);
+        return await this.request(`?regions=${region}`);
     }
 }
