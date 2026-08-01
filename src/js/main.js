@@ -9,13 +9,11 @@ Every other JavaScript module will eventually
 be imported here.
 ========================================================== */
 import CountryExplorerApp from './CountryExplorerApp.mjs';
+// Temporary API testing
+import './api-test.mjs';
 
-/* ==========================================================
-Create the Application Object
-========================================================== */
+// Create the Application Object
 const app = new CountryExplorerApp();
 
-/* ==========================================================
-Start the Application
-========================================================== */
+// Start the Application
 app.initialize();
