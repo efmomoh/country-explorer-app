@@ -11,6 +11,7 @@ be imported here.
 import CountryExplorerApp from './CountryExplorerApp.mjs';
 // Temporary API testing
 import './api-test.mjs';
+import './api-country-model-test.mjs';
 
 // Create the Application Object
 const app = new CountryExplorerApp();
