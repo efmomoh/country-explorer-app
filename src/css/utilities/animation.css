@@ -1,0 +1,37 @@
+/* Continuous clockwise globe rotation */
+@keyframes rotate-globe {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Because continuous animation can affect some users,
+we should also add a reduced-motion preference. 
+This follows accessibility best practices. */
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-image {
+        animation: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hero-section {
+        .hero-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-text h1 {
+            font-size: 2rem;
+        }
+
+        .hero-image {
+            font-size: 5rem;
+        }
+    }
+}

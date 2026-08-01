@@ -18,6 +18,10 @@ Course: WDD330 Final Project - Country Explorer App
 ========================================================== */
 
 // imports
+import Header from './components/Header.mjs';
+import Hero from './components/Hero.mjs';
+import SearchSection from './components/SearchSection.mjs';
+import CountryGrid from './components/CountryGrid.mjs';
 import Footer from './components/Footer.mjs';
 
 export default class CountryExplorerApp {
@@ -57,25 +61,52 @@ export default class CountryExplorerApp {
 
     initialize() {
         this.cacheDOM();
+        this.renderComponent(this.headerContainer, Header);
+        this.renderComponent(this.heroContainer, Hero);
+        this.renderComponent(this.searchContainer, SearchSection);
+        this.renderComponent(this.countryContainer, CountryGrid);
+        this.renderComponent(this.footerContainer, Footer);
         this.bindEvents();
         this.isRunning = true;
-        this.initializeFoter();
     }
 
     // Cache DOM Elements: Stores frequently used HTML elements.
 
     cacheDOM() {
-        // Search form
+        /* Header */
+        this.headerContainer = document.querySelector('.site-header');
+
+        /* Hero */
+        this.heroContainer = document.querySelector('.hero-section');
+
+        /* Search */
+        this.searchContainer = document.querySelector('.search-container');
+
+        /* Country Grid */
+        this.countryContainer = document.querySelector('.country-container');
+
+        /* Footer */
+        this.footerContainer = document.querySelector('.site-footer');
+
+        /* Search Form */
         this.searchForm = document.querySelector('.search-form');
 
-        // Search input
         this.searchInput = document.querySelector('#country-search');
 
-        // Region filter
         this.regionFilter = document.querySelector('#region-filter');
+    }
 
-        // Footer
-        this.footer = document.querySelector('.site-footer');
+    /* Creates and renders a component.
+    @param {HTMLElement} container - The DOM container.
+    @param {Class} Component - The component class.
+    */
+    renderComponent(container, Component) {
+        if (!container) {
+            return;
+        }
+
+        const component = new Component(container);
+        component.render();
     }
 
     // Bind Events: Handles user interactions.
@@ -88,15 +119,6 @@ export default class CountryExplorerApp {
                 console.log(searchValue);
                 // Future: Send searchValue to CountryAPI
             });
-        }
-    }
-
-    // initialize footer
-    initializeFoter() {
-        const footerContainer = document.querySelector('.site-footer');
-        if (footerContainer) {
-            const footer = new Footer(footerContainer);
-            footer.render();
         }
     }
 }
