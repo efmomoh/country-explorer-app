@@ -1,0 +1,59 @@
+/* ==========================================================
+Header Component Styling
+========================================================== */
+.site-header {
+    background-color: var(--primary-color);
+    color: var(--surface-color);
+    padding: 1rem;
+
+    .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-color);
+        text-decoration: none;
+        font-family: var(--heading-font);
+        font-size: 1.5rem;
+        font-weight: bold;
+
+        &:hover,
+        &:focus {
+            color: var(--surface-color);
+        }
+    }
+
+    .navigation {
+        ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                color: var(--surface-color);
+                text-decoration: underline var(--surface-color);
+            }
+        }
+    }
+}
+
+/* @media screen and (max-width: 768px) {
+    .site-header {
+        .header-container {
+            flex-wrap: wrap;
+        }
+    }
+} */
