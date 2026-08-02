@@ -27,7 +27,6 @@ WDD330 Final Project - Country Explorer App
 import CountryCard from './CountryCard.mjs';
 
 export default class CountryGrid {
-
     constructor(container) {
         this.container = container;
         // Stores the grid element after rendering
@@ -69,15 +68,17 @@ export default class CountryGrid {
             return;
         }
 
-        this.grid.innerHTML = countries.map((country, index) => {
-            const card = new CountryCard(country);
-            return `
+        this.grid.innerHTML = countries
+            .map((country, index) => {
+                const card = new CountryCard(country);
+                return `
 
                 <div class="country-card-wrapper" data-index="${index}">
                     ${card.render()}
                 </div>
                 `;
-        }).join('');
+            })
+            .join('');
         this.addCardEvents(countries);
     }
 
@@ -92,9 +93,7 @@ export default class CountryGrid {
                 if (this.onCountrySelected) {
                     this.onCountrySelected(selectedCountry);
                 }
-            }
-            );
-
+            });
         });
     }
 }

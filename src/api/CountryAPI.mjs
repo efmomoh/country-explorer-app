@@ -75,6 +75,7 @@ export default class CountryAPI {
     */
 
     async getCountriesByRegion(region) {
+        // console.log(region);
         return await this.request(`?regions=${region}`);
     }
 }

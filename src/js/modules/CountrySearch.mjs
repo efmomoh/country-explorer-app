@@ -57,7 +57,7 @@ export default class CountrySearch {
     // OR
 
     createCountryObjects(countryData) {
-        console.log("RAW API RESPONSE:");
+        console.log('RAW API RESPONSE:');
         console.log(countryData);
 
         let countries = countryData;
@@ -70,7 +70,7 @@ export default class CountrySearch {
             countries = [countries];
         }
 
-        console.log("COUNTRIES ARRAY:");
+        console.log('COUNTRIES ARRAY:');
         console.log(countries);
 
         return countries.map((country) => new Country(country));

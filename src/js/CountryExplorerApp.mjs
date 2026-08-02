@@ -83,7 +83,10 @@ export default class CountryExplorerApp {
         this.renderComponent(this.heroContainer, Hero);
         this.renderComponent(this.searchContainer, SearchSection);
 
-        this.countryGrid = this.renderComponent(this.countryContainer, CountryGrid);
+        this.countryGrid = this.renderComponent(
+            this.countryContainer,
+            CountryGrid
+        );
 
         this.renderComponent(this.footerContainer, Footer);
 
@@ -130,9 +133,8 @@ export default class CountryExplorerApp {
 
         this.regionFilter = document.querySelector('#region-filter');
 
-        // Country details 
+        // Country details
         this.detailsContainer = document.querySelector('.details-container');
-
     }
 
     /* Creates and renders a component.
@@ -155,7 +157,7 @@ export default class CountryExplorerApp {
             return;
         }
 
-        // search form listener 
+        // search form listener
         this.searchForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const searchValue = this.searchInput.value.trim();
@@ -169,15 +171,27 @@ export default class CountryExplorerApp {
             try {
                 const results =
                     await this.countrySearch.searchByName(searchValue);
-
                 this.countryGrid.displayCountries(results);
-
             } catch (error) {
                 console.error(error);
             }
-        }
-        );
+        });
 
         // region filter listener
+        this.regionFilter.addEventListener('change', async () => {
+            const region = this.regionFilter.value;
+
+            try {
+                this.searchInput.value = '';
+
+                this.state.selectedCountry = null;
+                this.countryDetails.render();
+
+                const results = await this.countrySearch.searchByRegion(region);
+                this.countryGrid.displayCountries(results);
+            } catch (error) {
+                console.error(error);
+            }
+        });
     }
 }

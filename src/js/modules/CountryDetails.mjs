@@ -23,17 +23,14 @@ WDD330 Final Project - Country Explorer App
 ==========================================================
 */
 
-
 export default class CountryDetails {
-
     constructor(container) {
         this.container = container;
     }
 
-
     render(country) {
         if (!country) {
-            this.container.innerHTML = "";
+            this.container.innerHTML = '';
             return;
         }
 
@@ -62,17 +59,17 @@ export default class CountryDetails {
                 </p>
     
                 <p><strong>Languages:</strong>
-                    ${country.languages.join(", ")}
+                    ${country.languages.join(', ')}
                 </p>
     
                 <p><strong>Currencies:</strong>
                     ${country.currencies
-                .map(currency => currency.name)
-                .join(", ")}
+                        .map((currency) => currency.name)
+                        .join(', ')}
                 </p>
     
                 <p><strong>Time Zones:</strong>
-                    ${country.timezones.join(", ")}
+                    ${country.timezones.join(', ')}
                 </p>
     
                 <p>
