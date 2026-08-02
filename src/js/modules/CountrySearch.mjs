@@ -57,17 +57,21 @@ export default class CountrySearch {
     // OR
 
     createCountryObjects(countryData) {
+        console.log('RAW API RESPONSE:');
         console.log(countryData);
 
         let countries = countryData;
         // Handles API responses wrapped inside an object
-        if (countryData.data) {
-            countries = countryData.data;
+        if (countryData.data?.objects) {
+            countries = countryData.data.objects;
         }
 
         if (!Array.isArray(countries)) {
             countries = [countries];
         }
+
+        console.log('COUNTRIES ARRAY:');
+        console.log(countries);
 
         return countries.map((country) => new Country(country));
     }

@@ -49,7 +49,10 @@ export default class CountryAPI {
         if (!response.ok) {
             throw new Error(`Country API request failed: ${response.status}`);
         }
-        return await response.json();
+
+        const data = await response.json();
+        // console.log(data);
+        return data;
     }
 
     /* Fetch all countries
@@ -72,6 +75,7 @@ export default class CountryAPI {
     */
 
     async getCountriesByRegion(region) {
+        // console.log(region);
         return await this.request(`?regions=${region}`);
     }
 }

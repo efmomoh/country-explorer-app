@@ -30,3 +30,46 @@ Country Grid Styling
         color: var(--text-color);
     }
 }
+
+/* 
+.country-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.country-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.country-card:hover {
+    transform: translateY(-5px);
+}
+
+.country-flag {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.country-card-content {
+    padding: 1.25rem;
+}
+
+.country-name {
+    margin-bottom: 1rem;
+}
+
+.country-card-content p {
+    margin: 0.5rem 0;
+}
+
+.empty-message {
+    text-align: center;
+    color: #666;
+} */
