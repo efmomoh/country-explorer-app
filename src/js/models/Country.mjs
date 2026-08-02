@@ -34,15 +34,15 @@ export default class Country {
 
         /*
         Basic country information
-        REST Countries API fields
+        REST Countries API v5 fields mapping
         are transformed here.
         */
 
-        this.name = countryData.name?.common || 'Unknown';
+        this.name = countryData.names?.common || 'Unknown';
 
-        this.flag = countryData.flags?.png || countryData.flags?.svg || '';
+        this.flag = countryData.flag.url_png || countryData.flag.url_svg || '';
 
-        this.capital = countryData.capital?.[0] || 'Not available';
+        this.capital = countryData.capitals?.[0]?.name || 'Not available';
 
         this.population = countryData.population || 0;
 
@@ -50,11 +50,11 @@ export default class Country {
 
         this.subregion = countryData.subregion || 'Unknown';
 
-        this.area = countryData.area || 0;
+        this.area = countryData.area?.kilometers || 0;
 
         this.timezones = countryData.timezones || [];
 
-        this.maps = countryData.maps?.googleMaps || '';
+        this.maps = countryData.links?.google_maps || '';
 
         this.languages = this.getLanguages(countryData.languages);
 
@@ -78,7 +78,7 @@ export default class Country {
         if (!languages) {
             return [];
         }
-        return Object.values(languages);
+        return languages.map((language) => language.name);
     }
 
     /*
@@ -91,9 +91,10 @@ export default class Country {
             return [];
         }
 
-        return Object.values(currencies).map((currency) => {
+        return currencies.map((currency) => {
             return {
                 name: currency.name,
+                code: currency.code,
                 symbol: currency.symbol
             };
         });

@@ -25,6 +25,7 @@ import CountryGrid from './components/CountryGrid.mjs';
 import Footer from './components/Footer.mjs';
 import CountryAPI from '../api/CountryAPI.mjs';
 import CountrySearch from './modules/CountrySearch.mjs';
+import CountryDetails from './modules/CountryDetails.mjs';
 
 export default class CountryExplorerApp {
     // Constructor: Creates the application object.
@@ -39,8 +40,9 @@ export default class CountryExplorerApp {
         // Application Modules
         this.countryAPI = new CountryAPI();
         this.countrySearch = null;
+        this.countryDetails = null;
         this.exchangeRateAPI = null;
-        this.countryRenderer = null;
+        this.countryGrid = null;
 
         // Application state
         this.initializeState();
@@ -50,6 +52,7 @@ export default class CountryExplorerApp {
         this.initialize();
     }
 
+    // Initializes the application state.
     initializeState() {
         this.state = {
             countries: [],
@@ -63,24 +66,38 @@ export default class CountryExplorerApp {
     // initialize modules
     initializeModules() {
         this.countrySearch = new CountrySearch(this.countryAPI, this.state);
+        // this.countryDetails = new CountryDetails(this.detailsContainer);
     }
+
     // Initialize Application: Controls the startup process.
 
     initialize() {
         // Get static containers from HTML
         this.cacheDOM();
 
+        // Create modules after DOM exists
+        // this.initializeModules();
+
         // Render components
         this.renderComponent(this.headerContainer, Header);
         this.renderComponent(this.heroContainer, Hero);
         this.renderComponent(this.searchContainer, SearchSection);
 
-        this.renderComponent(this.countryContainer, CountryGrid);
+        this.countryGrid = this.renderComponent(this.countryContainer, CountryGrid);
 
         this.renderComponent(this.footerContainer, Footer);
 
         // Refresh DOM references after rendering
         this.cacheDOM();
+
+        // Create details module after DOM exists
+        this.countryDetails = new CountryDetails(this.detailsContainer);
+
+        // Connect country selection
+        this.countryGrid.setCountrySelectedCallback((country) => {
+            this.state.selectedCountry = country;
+            this.countryDetails.render(country);
+        });
 
         // Attach events after elements exist
         this.bindEvents();
@@ -112,6 +129,10 @@ export default class CountryExplorerApp {
         this.searchInput = document.querySelector('#country-search');
 
         this.regionFilter = document.querySelector('#region-filter');
+
+        // Country details 
+        this.detailsContainer = document.querySelector('.details-container');
+
     }
 
     /* Creates and renders a component.
@@ -125,36 +146,38 @@ export default class CountryExplorerApp {
 
         const component = new Component(container);
         component.render();
+        return component;
     }
 
     // Bind Events: Handles user interactions.
     bindEvents() {
-        if (this.searchForm) {
-            this.searchForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                // console.log('Search submitted');
-                const searchValue = this.searchInput.value.trim();
-                // console.log('Search value:', searchValue);
-                if (!searchValue) {
-                    return;
-                }
+        if (!this.searchForm) {
+            return;
+        }
 
+        // search form listener 
+        this.searchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const searchValue = this.searchInput.value.trim();
+
+            if (!searchValue) {
+                return;
+            }
+
+            // const results = await this.countrySearch.searchByName(searchValue);
+            // this.countryGrid.displayCountries(results);
+            try {
                 const results =
                     await this.countrySearch.searchByName(searchValue);
-                return results; //may remove it
-                // console.log('Search results:', results);
-            });
+
+                this.countryGrid.displayCountries(results);
+
+            } catch (error) {
+                console.error(error);
+            }
         }
+        );
+
+        // region filter listener
     }
-    // bindEvents() {
-    //     // Search Form Event - Future: This will connect to the CountryAPI class.
-    //     if (this.searchForm) {
-    //         this.searchForm.addEventListener('submit', (event) => {
-    //             event.preventDefault();
-    //             const searchValue = this.searchInput.value;
-    //             console.log(searchValue);
-    //             // Future: Send searchValue to CountryAPI
-    //         });
-    //     }
-    // }
 }

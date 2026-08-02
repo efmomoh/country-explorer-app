@@ -1,47 +1,36 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Country Explorer App</title>
-        <link rel="stylesheet" href="/src/css/style.css" />
-    </head>
 
-    <body>
-        <!--
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Country Explorer App</title>
+    <link rel="stylesheet" href="/src/css/style.css" />
+</head>
+
+<body>
+    <!--
       ===========================================================
       HEADER
       Contains the application logo and navigation links.
       ===========================================================
   -->
-        <header class="site-header"></header>
+    <header class="site-header"></header>
 
-        <!--
+    <!--
       ===========================================================
       MAIN CONTENT: Every section of our application will be placed here.
       ===========================================================
   -->
-        <main>
-            <!-- ======================================================
-    HERO SECTION: Introduces the application and provides the main search controls.
-    ====================================================== -->
-            <section class="hero-section"></section>
+    <main>
+        <section class="hero-section"></section>
+        <section class="search-container"></section>
+        <section class="country-container"></section>
+        <div class="details-container"></div>
+        <!-- <h2>Featured Countried</h2> -->
 
-            <!-- ==================================================
-      SEARCH FORM: Accessible search controls.
-      ================================================== -->
-            <section class="search-container"></section>
-
-            <!-- ==========================================================
-        FEATURED COUNTRIES SECTION: This section will eventually display country data
-        retrieved from the REST Countries API. 
-        For now, we use static placeholder information to build the layout.
-        ========================================================== -->
-            <!-- <section class="featured-countries"> -->
-            <!-- <h2>Featured Countried</h2> -->
-            <section class="country-container"></section>
-            <!-- <div class="country-grid">
+        <!-- <div class="country-grid">
                 <article class="country-card">
                     <img src="https://flagcdn.com/w320/lr.png" alt="Flag of Liberia" />
 
@@ -52,8 +41,8 @@
                     </div>
                 </article> -->
 
-            <!-- Country Card 2 -->
-            <!-- <article class="country-card">
+        <!-- Country Card 2 -->
+        <!-- <article class="country-card">
                     <img src="https://flagcdn.com/w320/us.png" alt="Flag of the United States of America" />
 
                     <div class="country-info">
@@ -63,8 +52,8 @@
                     </div>
                 </article> -->
 
-            <!-- Country Card 2 -->
-            <!-- <article class="country-card">
+        <!-- Country Card 2 -->
+        <!-- <article class="country-card">
                     <img src="https://flagcdn.com/w320/ca.png" alt="Flag of Canada" />
 
                     <div class="country-info">
@@ -73,8 +62,8 @@
                         <button>View Details</button>
                     </div>
                 </article> -->
-            <!-- Country Card 3 -->
-            <!-- <article class="country-card">
+        <!-- Country Card 3 -->
+        <!-- <article class="country-card">
                     <img src="https://flagcdn.com/w320/gb.png" alt="Flag of Great Britain" />
 
                     <div class="country-info">
@@ -83,16 +72,17 @@
                         <button>View Details</button>
                     </div>
                 </article> -->
-            <!-- </div> -->
-            <!-- </section> -->
-        </main>
+        <!-- </div> -->
+        <!-- </section> -->
+    </main>
 
-        <!-- ==========================================================
+    <!-- ==========================================================
     FOOTER: Provides application information and navigation support.
     ========================================================== -->
-        <footer class="site-footer" aria-label="Website footer"></footer>
+    <footer class="site-footer" aria-label="Website footer"></footer>
 
-        <!-- Main JavaScript File -->
-        <script type="module" src="/src/js/main.js"></script>
-    </body>
+    <!-- Main JavaScript File -->
+    <script type="module" src="/src/js/main.js"></script>
+</body>
+
 </html>
