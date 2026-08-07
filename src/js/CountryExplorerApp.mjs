@@ -26,7 +26,8 @@ import Footer from './components/Footer.mjs';
 import CountryAPI from '../api/CountryAPI.mjs';
 import CountrySearch from './modules/CountrySearch.mjs';
 import CountryDetails from './modules/CountryDetails.mjs';
-
+import FavoritesManager from './modules/FavoritesManager.mjs';
+import FavoritesSection from './components/FavoritesSection.mjs';
 export default class CountryExplorerApp {
     // Constructor: Creates the application object.
     constructor() {
@@ -41,6 +42,7 @@ export default class CountryExplorerApp {
         this.countryAPI = new CountryAPI();
         this.countrySearch = null;
         this.countryDetails = null;
+        this.favoritesManager = null;
         this.exchangeRateAPI = null;
         this.countryGrid = null;
 
@@ -66,6 +68,7 @@ export default class CountryExplorerApp {
     // initialize modules
     initializeModules() {
         this.countrySearch = new CountrySearch(this.countryAPI, this.state);
+        this.favoritesManager = new FavoritesManager();
         // this.countryDetails = new CountryDetails(this.detailsContainer);
     }
 
@@ -83,10 +86,22 @@ export default class CountryExplorerApp {
         this.renderComponent(this.heroContainer, Hero);
         this.renderComponent(this.searchContainer, SearchSection);
 
-        this.countryGrid = this.renderComponent(
-            this.countryContainer,
-            CountryGrid
+        // this.countryGrid = this.renderComponent(
+        //     this.countryContainer,
+        //     CountryGrid
+        // );
+
+        // Render favorite section
+        this.favoritesSection = this.renderComponent(
+            this.favoritesContainer,
+            FavoritesSection
         );
+
+        this.countryGrid = new CountryGrid(
+            this.countryContainer,
+            this.favoritesManager
+        );
+        this.countryGrid.render();
 
         this.renderComponent(this.footerContainer, Footer);
 
@@ -102,6 +117,35 @@ export default class CountryExplorerApp {
             this.countryDetails.render(country);
         });
 
+        // connect the favorite section
+        // this.countryGrid.setFavoriteSelectedCallback((country) => {
+        //     this.favoritesManager.toggleFavorite(country);
+        //     console.log(this.favoritesManager.getFavorites()
+        //     );
+        // });
+
+        this.countryGrid.setFavoriteSelectedCallback((country) => {
+            this.favoritesManager.toggleFavorite(country);
+            // console.log(this.favoritesManager.getFavorites()
+            this.countryGrid.displayCountries(this.state.searchResults);
+
+            // Refresh favorites section
+            this.favoritesSection.displayFavorites(
+                this.favoritesManager.getFavorites()
+            );
+        });
+
+        // this renders selected country
+        this.favoritesSection.setFavoriteSelectedCallback((country) => {
+            this.state.selectedCountry = country;
+            this.countryDetails.render(country);
+        });
+
+        // Display any favorites already stored in localStorage
+        this.favoritesSection.displayFavorites(
+            this.favoritesManager.getFavorites()
+        );
+
         // Attach events after elements exist
         this.bindEvents();
 
@@ -116,6 +160,11 @@ export default class CountryExplorerApp {
 
         /* Hero */
         this.heroContainer = document.querySelector('.hero-section');
+
+        // Favorite section
+        this.favoritesContainer = document.querySelector(
+            '.favorites-container'
+        );
 
         /* Search */
         this.searchContainer = document.querySelector('.search-container');
