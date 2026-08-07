@@ -107,7 +107,7 @@ Handles:
         cards.forEach((card) => {
             const index = card.dataset.index;
             const selectedCountry = countries[index];
-
+            // console.log("GRID:", selectedCountry);
             /*  Clicking anywhere on the card  opens the country details.  */
 
             card.addEventListener('click', () => {
@@ -128,5 +128,39 @@ Handles:
                 }
             });
         });
+    }
+
+    /*
+==========================================================
+Display loading message
+==========================================================
+*/
+
+    showLoading() {
+        this.grid.innerHTML = `
+
+        <p class="loading-message">
+            Loading countries...
+        </p>
+
+    `;
+    }
+
+    /*
+==========================================================
+Display API error
+==========================================================
+*/
+
+    showError(message) {
+        this.grid.innerHTML = `
+
+        <p class="error-message">
+
+            ${message}
+
+        </p>
+
+    `;
     }
 }

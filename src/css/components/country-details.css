@@ -1,0 +1,49 @@
+.exchange-rate {
+    margin-top: 1.5rem;
+
+    padding: 1rem;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    background-color: #f8f9fa;
+}
+
+.exchange-rate h3 {
+    margin-top: 0;
+
+    margin-bottom: 0.75rem;
+}
+
+.exchange-rate p {
+    margin: 0.5rem 0;
+}
+
+.exchange-rate small {
+    display: block;
+
+    margin-top: 0.75rem;
+
+    color: #666;
+}
+
+.loading-message {
+    text-align: center;
+
+    padding: 2rem;
+
+    font-style: italic;
+
+    color: #666;
+}
+
+.error-message {
+    color: #b00020;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    padding: 2rem;
+}

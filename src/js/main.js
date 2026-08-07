@@ -14,6 +14,8 @@ import CountryExplorerApp from './CountryExplorerApp.mjs';
 // import './api-country-model-test.mjs';
 // import './search-test.mjs';
 // import './favorites-test.mjs';
+// import './exchange-rate-test.mjs';
+// import './exchange-rate-service-test.mjs';
 
 // Create the Application Object
 // eslint-disable-next-line

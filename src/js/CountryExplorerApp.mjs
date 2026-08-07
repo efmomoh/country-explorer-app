@@ -28,6 +28,9 @@ import CountrySearch from './modules/CountrySearch.mjs';
 import CountryDetails from './modules/CountryDetails.mjs';
 import FavoritesManager from './modules/FavoritesManager.mjs';
 import FavoritesSection from './components/FavoritesSection.mjs';
+import ExchangeRateAPI from '../api/ExchangeRateAPI.mjs';
+import ExchangeRateService from './modules/ExchangeRateService.mjs';
+import ExchangeRateSection from './components/ExchangeRateSection.mjs';
 export default class CountryExplorerApp {
     // Constructor: Creates the application object.
     constructor() {
@@ -43,7 +46,10 @@ export default class CountryExplorerApp {
         this.countrySearch = null;
         this.countryDetails = null;
         this.favoritesManager = null;
-        this.exchangeRateAPI = null;
+        this.exchangeRateAPI = new ExchangeRateAPI();
+        // this.exchangeRateAPI = null;
+        this.exchangeRateService = null;
+        this.ExchangeRateSection = null;
         this.countryGrid = null;
 
         // Application state
@@ -61,7 +67,8 @@ export default class CountryExplorerApp {
             searchResults: [],
             selectedCountry: null,
             favoriteCountries: [],
-            selectedRegion: null
+            selectedRegion: null,
+            exchangeRate: null
         };
     }
 
@@ -69,6 +76,12 @@ export default class CountryExplorerApp {
     initializeModules() {
         this.countrySearch = new CountrySearch(this.countryAPI, this.state);
         this.favoritesManager = new FavoritesManager();
+        // Exchange rate  modules
+        this.exchangeRateAPI = new ExchangeRateAPI();
+        this.exchangeRateService = new ExchangeRateService(
+            this.exchangeRateAPI,
+            this.state
+        );
         // this.countryDetails = new CountryDetails(this.detailsContainer);
     }
 
@@ -109,12 +122,64 @@ export default class CountryExplorerApp {
         this.cacheDOM();
 
         // Create details module after DOM exists
-        this.countryDetails = new CountryDetails(this.detailsContainer);
+        this.countryDetails = new CountryDetails(
+            this.detailsContainer,
+            this.exchangeRateService
+        );
+
+        // Render exhange rate section
+        this.exchangeRateSection = this.renderComponent(
+            this.exchangeRateContainer,
+            ExchangeRateSection
+        );
 
         // Connect country selection
-        this.countryGrid.setCountrySelectedCallback((country) => {
+        this.countryGrid.setCountrySelectedCallback(async (country) => {
+            // console.log("APP:", country);
+            // Save selected country
             this.state.selectedCountry = country;
+
+            // Display country details
             this.countryDetails.render(country);
+
+            /*
+                Display loading message while
+                retrieving exchange rates.
+                */
+
+            this.exchangeRateSection.showLoading();
+
+            try {
+                /*
+                    Every country may have multiple currencies.
+        
+                    We will use the first one.
+                    */
+
+                const currencyCode = Object.keys(country.currencies)[0];
+
+                /*
+                    Convert 100 USD to the
+                    country's currency.
+                    */
+
+                const exchangeRate =
+                    await this.exchangeRateService.convertCurrency(
+                        'USD',
+                        currencyCode,
+                        100
+                    );
+
+                /*
+                    Display the conversion.
+                    */
+
+                this.exchangeRateSection.display(exchangeRate);
+            } catch {
+                this.exchangeRateSection.showError(
+                    'Unable to load exchange rate.'
+                );
+            }
         });
 
         // connect the favorite section
@@ -184,6 +249,12 @@ export default class CountryExplorerApp {
 
         // Country details
         this.detailsContainer = document.querySelector('.details-container');
+
+        /* Exchange Rate */
+
+        this.exchangeRateContainer = document.querySelector(
+            '.exchange-rate-container'
+        );
     }
 
     /* Creates and renders a component.
@@ -218,11 +289,18 @@ export default class CountryExplorerApp {
             // const results = await this.countrySearch.searchByName(searchValue);
             // this.countryGrid.displayCountries(results);
             try {
+                this.countryGrid.showLoading();
+                this.state.selectedCountry = null;
+
+                this.countryDetails.render();
+
                 const results =
                     await this.countrySearch.searchByName(searchValue);
                 this.countryGrid.displayCountries(results);
-            } catch (error) {
-                console.error(error);
+            } catch {
+                this.countryGrid.showError(
+                    'Unable to load countries. Please try again.'
+                );
             }
         });
 
@@ -231,6 +309,11 @@ export default class CountryExplorerApp {
             const region = this.regionFilter.value;
 
             try {
+                this.countryGrid.showLoading();
+                this.state.selectedCountry = null;
+
+                this.countryDetails.render();
+
                 this.searchInput.value = '';
 
                 this.state.selectedCountry = null;
@@ -238,8 +321,10 @@ export default class CountryExplorerApp {
 
                 const results = await this.countrySearch.searchByRegion(region);
                 this.countryGrid.displayCountries(results);
-            } catch (error) {
-                console.error(error);
+            } catch {
+                this.countryGrid.showError(
+                    'Unable to load countries. Please try again.'
+                );
             }
         });
     }
