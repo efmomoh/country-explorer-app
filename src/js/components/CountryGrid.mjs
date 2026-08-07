@@ -13,6 +13,7 @@ Responsibilities:
 - Display search results
 - Handle country selection
 - Notify the application when a country is selected
+- Handle favorite selection
 - Show empty messages when needed
 
 Author:
@@ -27,140 +28,269 @@ WDD330 Final Project - Country Explorer App
 import CountryCard from './CountryCard.mjs';
 
 export default class CountryGrid {
+    /*
+    ======================================================
+    Constructor
+    ======================================================
+    */
+
     constructor(container, favoriteManager) {
         this.container = container;
+
         this.favoriteManager = favoriteManager;
-        // Stores the grid element after rendering
+
+        /*
+        Stores the grid element after rendering.
+        */
+
         this.grid = null;
-        // Callback function provided by App
+
+        /*
+        Callback provided by CountryExplorerApp.
+
+        Used when the user clicks
+        "View Details".
+        */
+
         this.onCountrySelected = null;
+
+        /*
+        Callback provided by CountryExplorerApp.
+
+        Used when the user clicks
+        the Favorite button.
+        */
+
         this.onFavoriteSelected = null;
     }
 
-    /* Render country grid structure  */
+    /*
+    ======================================================
+    Render Country Grid Structure
+    ======================================================
+    */
 
     render() {
         this.container.innerHTML = `
-        <section class="country-section" id="countries" aria-labelledby="country-title">
-            <h2 id="country-title">Countries</h2>
 
-            <div class="country-grid">
-                <p class="empty-message">Search for a country to explore information.</p>
-            </div>
-        </section>
+            <section
+                class="country-section"
+                id="countries"
+                aria-labelledby="country-title"
+            >
+
+                <h2 id="country-title">
+                    Countries
+                </h2>
+
+
+                <div class="country-grid">
+
+                    <p class="empty-message">
+                        Search for a country to explore information.
+                    </p>
+
+                </div>
+
+            </section>
+
         `;
 
         this.grid = this.container.querySelector('.country-grid');
     }
 
-    /* Allows CountryExplorerApp to provide a country selection function */
+    /*
+    ======================================================
+    Set Country Selected Callback
+    ======================================================
+    
+    CountryExplorerApp provides the function that
+    should run when View Details is clicked.
+    */
+
     setCountrySelectedCallback(callback) {
         this.onCountrySelected = callback;
     }
 
-    /* Allows CountryExplorerApp to provide a favorite selection function */
+    /*
+    ======================================================
+    Set Favorite Selected Callback
+    ======================================================
+    */
 
     setFavoriteSelectedCallback(callback) {
         this.onFavoriteSelected = callback;
     }
 
-    /* Display country cards
-    Receives: Array of Country model objects
+    /*
+    ======================================================
+    Display Country Cards
+    ======================================================
+
+    Receives:
+    ----------
+    countries
+        Array of Country model objects.
     */
 
     displayCountries(countries) {
         if (!countries.length) {
             this.grid.innerHTML = `
-            <p class="empty-message">No countries were found.</p>
+
+                <p class="empty-message">
+                    No countries were found.
+                </p>
+
             `;
+
             return;
         }
+
+        /*
+        Create each CountryCard.
+        */
 
         this.grid.innerHTML = countries
             .map((country, index) => {
                 const isFavorite = this.favoriteManager.isFavorite(country);
-                const card = new CountryCard(country, isFavorite);
+
+                /*
+                Pass the country-selection callback
+                into CountryCard.
+                */
+
+                const card = new CountryCard(
+                    country,
+                    isFavorite,
+                    this.onCountrySelected
+                );
+
                 return `
 
-                <div class="country-card-wrapper" data-index="${index}">
-                    ${card.render()}
-                </div>
+                    <div
+                        class="country-card-wrapper"
+                        data-index="${index}"
+                    >
+
+                        ${card.render()}
+
+                    </div>
+
                 `;
             })
             .join('');
+
+        /*
+        Attach events after the HTML
+        has been inserted into the DOM.
+        */
+
         this.addCardEvents(countries);
     }
 
-    /*Add click events to country cards*/
     /*
-Adds click events to every country card.
+    ======================================================
+    Add Card Events
+    ======================================================
 
-Handles:
----------
-- Country selection
-- Favorite button click
-*/
+    Handles:
+
+    - View Details
+    - Favorite button
+    */
 
     addCardEvents(countries) {
         const cards = this.grid.querySelectorAll('.country-card-wrapper');
 
-        cards.forEach((card) => {
-            const index = card.dataset.index;
+        cards.forEach((card, index) => {
             const selectedCountry = countries[index];
-            // console.log("GRID:", selectedCountry);
-            /*  Clicking anywhere on the card  opens the country details.  */
 
-            card.addEventListener('click', () => {
-                if (this.onCountrySelected) {
-                    this.onCountrySelected(selectedCountry);
-                }
-            });
+            /*
+            ------------------------------------------------
+            View Details
+            ------------------------------------------------
 
-            /* Clicking the Favorite button should NOT open the details.
-            stopPropagation() prevents the card click event from firing.*/
+            Find the CountryCard instance's
+            View Details button.
+            */
+
+            const viewDetailsButton = card.querySelector(
+                '.view-details-button'
+            );
+
+            if (viewDetailsButton) {
+                viewDetailsButton.addEventListener('click', (event) => {
+                    /*
+                        Prevent the button click
+                        from triggering anything
+                        outside the button.
+                        */
+
+                    event.stopPropagation();
+
+                    /*
+                        Tell the application which
+                        country was selected.
+                        */
+
+                    if (this.onCountrySelected) {
+                        this.onCountrySelected(selectedCountry);
+                    }
+                });
+            }
+
+            /*
+            ------------------------------------------------
+            Favorite Button
+            ------------------------------------------------
+
+            Clicking Favorite should NOT open
+            the country details.
+            */
 
             const favoriteButton = card.querySelector('.favorite-button');
 
-            favoriteButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-                if (this.onFavoriteSelected) {
-                    this.onFavoriteSelected(selectedCountry);
-                }
-            });
+            if (favoriteButton) {
+                favoriteButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+
+                    if (this.onFavoriteSelected) {
+                        this.onFavoriteSelected(selectedCountry);
+                    }
+                });
+            }
         });
     }
 
     /*
-==========================================================
-Display loading message
-==========================================================
-*/
+    ======================================================
+    Display Loading Message
+    ======================================================
+    */
 
     showLoading() {
         this.grid.innerHTML = `
 
-        <p class="loading-message">
-            Loading countries...
-        </p>
+            <p class="loading-message">
+                Loading countries...
+            </p>
 
-    `;
+        `;
     }
 
     /*
-==========================================================
-Display API error
-==========================================================
-*/
+    ======================================================
+    Display API Error
+    ======================================================
+    */
 
     showError(message) {
         this.grid.innerHTML = `
 
-        <p class="error-message">
+            <p class="error-message">
+                ${message}
+            </p>
 
-            ${message}
-
-        </p>
-
-    `;
+        `;
     }
 }
