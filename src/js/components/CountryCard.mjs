@@ -12,6 +12,7 @@ Responsibilities:
 - Display country information
 - Display the country flag
 - Display basic country details
+- Display a View Details button
 - Display a Favorite button
 
 Author:
@@ -24,18 +25,27 @@ WDD330 Final Project - Country Explorer App
 */
 
 export default class CountryCard {
-    /* Receives one Country model object. */
+    /*
+    ======================================================
+    Constructor
+    ======================================================
+    */
 
     constructor(country, isFavorite = false) {
         this.country = country;
+
         this.isFavorite = isFavorite;
     }
 
-    /* Creates the HTML for a country card.
-    Returns: HTML string */
+    /*
+    ======================================================
+    Creates the HTML for a country card.
+    ======================================================
+    */
 
     render() {
         return `
+
             <article class="country-card">
 
                 <img
@@ -44,27 +54,51 @@ export default class CountryCard {
                     class="country-flag"
                 >
 
-                <h3>${this.country.name}</h3>
+
+                <h3>
+                    ${this.country.name}
+                </h3>
+
 
                 <p>
                     <strong>Capital:</strong>
                     ${this.country.capital}
                 </p>
 
+
                 <p>
                     <strong>Region:</strong>
                     ${this.country.region}
                 </p>
+
 
                 <p>
                     <strong>Population:</strong>
                     ${this.country.population.toLocaleString()}
                 </p>
 
-                <button type="button" class="favorite-button">
-                ${this.isFavorite ? '★ Remove Favorite' : '★ Add Favorite'}
+
+                <!-- View Details -->
+
+                <button
+                    type="button"
+                    class="view-details-button"
+                >
+                    View Details
                 </button>
+
+
+                <!-- Favorite -->
+
+                <button
+                    type="button"
+                    class="favorite-button"
+                >
+                    ${this.isFavorite ? '★ Remove Favorite' : '★ Add Favorite'}
+                </button>
+
             </article>
+
         `;
     }
 }

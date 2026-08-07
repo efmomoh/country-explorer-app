@@ -1,4 +1,6 @@
-/* ==========================================================
+/*
+==========================================================
+
 CountryExplorerApp Class
 
 Purpose:
@@ -12,320 +14,700 @@ Responsibilities:
 - Store application settings
 - Connect application modules
 - Manage application state
+- Manage the home/search view
+- Manage the country details view
+- Connect country selection
+- Connect favorites
+- Connect exchange rates
 
-Author: Enssah Fayia Momoh
-Course: WDD330 Final Project - Country Explorer App
-========================================================== */
+Author:
+Enssah Fayia Momoh
 
-// imports
+Course:
+WDD330 Final Project - Country Explorer App
+
+==========================================================
+*/
+
+// ======================================================
+// Imports
+// ======================================================
+
 import Header from './components/Header.mjs';
 import Hero from './components/Hero.mjs';
 import SearchSection from './components/SearchSection.mjs';
 import CountryGrid from './components/CountryGrid.mjs';
 import Footer from './components/Footer.mjs';
+
 import CountryAPI from '../api/CountryAPI.mjs';
+
 import CountrySearch from './modules/CountrySearch.mjs';
 import CountryDetails from './modules/CountryDetails.mjs';
 import FavoritesManager from './modules/FavoritesManager.mjs';
+
 import FavoritesSection from './components/FavoritesSection.mjs';
+
 import ExchangeRateAPI from '../api/ExchangeRateAPI.mjs';
 import ExchangeRateService from './modules/ExchangeRateService.mjs';
-import ExchangeRateSection from './components/ExchangeRateSection.mjs';
+
+// ======================================================
+// CountryExplorerApp
+// ======================================================
+
 export default class CountryExplorerApp {
-    // Constructor: Creates the application object.
+    /*
+    ======================================================
+    Constructor
+    ======================================================
+    */
+
     constructor() {
-        // Application information
+        /*
+        Application information
+        */
+
         this.appName = 'Country Explorer';
+
         this.version = '1.0.0';
 
-        // Application status
+        /*
+        Application status
+        */
+
         this.isRunning = false;
 
-        // Application Modules
+        /*
+        ==================================================
+        Application Modules
+        ==================================================
+        */
+
         this.countryAPI = new CountryAPI();
+
         this.countrySearch = null;
+
         this.countryDetails = null;
+
         this.favoritesManager = null;
-        this.exchangeRateAPI = new ExchangeRateAPI();
-        // this.exchangeRateAPI = null;
+
+        this.exchangeRateAPI = null;
+
         this.exchangeRateService = null;
-        this.ExchangeRateSection = null;
+
         this.countryGrid = null;
 
-        // Application state
+        this.favoritesSection = null;
+
+        /*
+        ==================================================
+        Application State
+        ==================================================
+        */
+
         this.initializeState();
+
+        /*
+        Initialize modules that do not
+        require DOM elements.
+        */
+
         this.initializeModules();
 
-        // Start Application
+        /*
+        Start application.
+        */
+
         this.initialize();
     }
 
-    // Initializes the application state.
+    /*
+    ======================================================
+    Initialize State
+    ======================================================
+    */
+
     initializeState() {
         this.state = {
             countries: [],
+
             searchResults: [],
+
             selectedCountry: null,
+
             favoriteCountries: [],
+
             selectedRegion: null,
+
             exchangeRate: null
         };
     }
 
-    // initialize modules
+    /*
+    ======================================================
+    Initialize Modules
+    ======================================================
+    */
+
     initializeModules() {
+        /*
+        Country Search
+        */
+
         this.countrySearch = new CountrySearch(this.countryAPI, this.state);
+
+        /*
+        Favorites
+        */
+
         this.favoritesManager = new FavoritesManager();
-        // Exchange rate  modules
+
+        /*
+        Exchange Rate API
+        */
+
         this.exchangeRateAPI = new ExchangeRateAPI();
+
+        /*
+        Exchange Rate Service
+        */
+
         this.exchangeRateService = new ExchangeRateService(
             this.exchangeRateAPI,
             this.state
         );
-        // this.countryDetails = new CountryDetails(this.detailsContainer);
     }
 
-    // Initialize Application: Controls the startup process.
+    /*
+    ======================================================
+    Initialize Application
+    ======================================================
+    */
 
     initialize() {
-        // Get static containers from HTML
+        /*
+        Get DOM elements.
+        */
+
         this.cacheDOM();
 
-        // Create modules after DOM exists
-        // this.initializeModules();
+        /*
+        Render static components.
+        */
 
-        // Render components
         this.renderComponent(this.headerContainer, Header);
+
         this.renderComponent(this.heroContainer, Hero);
+
         this.renderComponent(this.searchContainer, SearchSection);
 
-        // this.countryGrid = this.renderComponent(
-        //     this.countryContainer,
-        //     CountryGrid
-        // );
-
-        // Render favorite section
-        this.favoritesSection = this.renderComponent(
-            this.favoritesContainer,
-            FavoritesSection
-        );
+        /*
+        Create Country Grid.
+        */
 
         this.countryGrid = new CountryGrid(
             this.countryContainer,
             this.favoritesManager
         );
+
         this.countryGrid.render();
+
+        /*
+        Render Favorites Section.
+        */
+
+        this.favoritesSection = this.renderComponent(
+            this.favoritesContainer,
+            FavoritesSection
+        );
+
+        /*
+        Render Footer.
+        */
 
         this.renderComponent(this.footerContainer, Footer);
 
-        // Refresh DOM references after rendering
+        /*
+        Refresh DOM references.
+
+        This is important because some components
+        have now been rendered.
+        */
+
         this.cacheDOM();
 
-        // Create details module after DOM exists
+        /*
+        ==================================================
+        Country Details
+        ==================================================
+
+        CountryDetails receives the ExchangeRateService
+        so it can load the exchange rate itself.
+        */
+
         this.countryDetails = new CountryDetails(
             this.detailsContainer,
             this.exchangeRateService
         );
 
-        // Render exhange rate section
-        this.exchangeRateSection = this.renderComponent(
-            this.exchangeRateContainer,
-            ExchangeRateSection
-        );
-
-        // Connect country selection
-        this.countryGrid.setCountrySelectedCallback(async (country) => {
-            // console.log("APP:", country);
-            // Save selected country
-            this.state.selectedCountry = country;
-
-            // Display country details
-            this.countryDetails.render(country);
-
-            /*
-                Display loading message while
-                retrieving exchange rates.
-                */
-
-            this.exchangeRateSection.showLoading();
-
-            try {
-                /*
-                    Every country may have multiple currencies.
-        
-                    We will use the first one.
-                    */
-
-                const currencyCode = Object.keys(country.currencies)[0];
-
-                /*
-                    Convert 100 USD to the
-                    country's currency.
-                    */
-
-                const exchangeRate =
-                    await this.exchangeRateService.convertCurrency(
-                        'USD',
-                        currencyCode,
-                        100
-                    );
-
-                /*
-                    Display the conversion.
-                    */
-
-                this.exchangeRateSection.display(exchangeRate);
-            } catch {
-                this.exchangeRateSection.showError(
-                    'Unable to load exchange rate.'
-                );
-            }
+        this.countryDetails.setBackToSearchCallback(() => {
+            this.state.selectedCountry = null;
+            this.showHomeView();
         });
 
-        // connect the favorite section
-        // this.countryGrid.setFavoriteSelectedCallback((country) => {
-        //     this.favoritesManager.toggleFavorite(country);
-        //     console.log(this.favoritesManager.getFavorites()
-        //     );
-        // });
+        /*
+        ==================================================
+        Start on Home/Search View
+        ==================================================
+        */
+
+        this.showHomeView();
+
+        /*
+        ==================================================
+        Connect Country Selection
+        ==================================================
+        */
+
+        this.countryGrid.setCountrySelectedCallback((country) => {
+            /*
+                Save selected country.
+                */
+
+            this.state.selectedCountry = country;
+
+            /*
+                Switch from Home/Search
+                to Country Details.
+                */
+
+            this.showDetailsView();
+
+            /*
+                Render selected country.
+
+                CountryDetails will also load
+                the exchange rate.
+                */
+
+            this.countryDetails.render(country);
+        });
+
+        /*
+        ==================================================
+        Connect Favorite Selection
+        ==================================================
+        */
 
         this.countryGrid.setFavoriteSelectedCallback((country) => {
+            /*
+                Toggle favorite.
+                */
+
             this.favoritesManager.toggleFavorite(country);
-            // console.log(this.favoritesManager.getFavorites()
+
+            /*
+                Refresh country cards.
+                */
+
             this.countryGrid.displayCountries(this.state.searchResults);
 
-            // Refresh favorites section
+            /*
+                Refresh favorites section.
+                */
+
             this.favoritesSection.displayFavorites(
                 this.favoritesManager.getFavorites()
             );
         });
 
-        // this renders selected country
+        /*
+        ==================================================
+        Connect Favorites Section
+        ==================================================
+        */
+
         this.favoritesSection.setFavoriteSelectedCallback((country) => {
+            /*
+                Save selected country.
+                */
+
             this.state.selectedCountry = country;
+
+            /*
+                Switch to details view.
+                */
+
+            this.showDetailsView();
+
+            /*
+                Render selected country.
+                */
+
             this.countryDetails.render(country);
         });
 
-        // Display any favorites already stored in localStorage
+        /*
+        ==================================================
+        Display Existing Favorites
+        ==================================================
+        */
+
         this.favoritesSection.displayFavorites(
             this.favoritesManager.getFavorites()
         );
 
-        // Attach events after elements exist
+        /*
+        Attach application events.
+        */
+
         this.bindEvents();
+
+        /*
+        Application is ready.
+        */
 
         this.isRunning = true;
     }
 
-    // Cache DOM Elements: Stores frequently used HTML elements.
+    /*
+    ======================================================
+    Show Home/Search View
+    ======================================================
+
+    Displays:
+
+    - Hero
+    - Search
+    - Country Grid
+    - Favorites
+
+    Hides:
+
+    - Country Details
+    ======================================================
+    */
+
+    showHomeView() {
+        /*
+        Show Home/Search components.
+        */
+
+        if (this.heroContainer) {
+            this.heroContainer.hidden = false;
+        }
+
+        if (this.searchContainer) {
+            this.searchContainer.hidden = false;
+        }
+
+        if (this.countryContainer) {
+            this.countryContainer.hidden = false;
+        }
+
+        if (this.favoritesContainer) {
+            this.favoritesContainer.hidden = false;
+        }
+
+        /*
+        Hide Country Details.
+        */
+
+        if (this.detailsContainer) {
+            this.detailsContainer.hidden = true;
+        }
+    }
+
+    /*
+    ======================================================
+    Show Country Details View
+    ======================================================
+
+    Displays:
+
+    - Country Details
+
+    Hides:
+
+    - Hero
+    - Search
+    - Country Grid
+    - Favorites
+    ======================================================
+    */
+
+    showDetailsView() {
+        /*
+        Hide Home/Search components.
+        */
+
+        if (this.heroContainer) {
+            this.heroContainer.hidden = true;
+        }
+
+        if (this.searchContainer) {
+            this.searchContainer.hidden = true;
+        }
+
+        if (this.countryContainer) {
+            this.countryContainer.hidden = true;
+        }
+
+        if (this.favoritesContainer) {
+            this.favoritesContainer.hidden = true;
+        }
+
+        /*
+        Show Country Details.
+        */
+
+        if (this.detailsContainer) {
+            this.detailsContainer.hidden = false;
+        }
+
+        /*
+        Scroll to the details section.
+        */
+
+        if (this.detailsContainer) {
+            this.detailsContainer.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+
+    /*
+    ======================================================
+    Cache DOM Elements
+    ======================================================
+    */
 
     cacheDOM() {
-        /* Header */
+        /*
+        Header
+        */
+
         this.headerContainer = document.querySelector('.site-header');
 
-        /* Hero */
+        /*
+        Hero
+        */
+
         this.heroContainer = document.querySelector('.hero-section');
 
-        // Favorite section
+        /*
+        Favorites
+        */
+
         this.favoritesContainer = document.querySelector(
             '.favorites-container'
         );
 
-        /* Search */
+        /*
+        Search
+        */
+
         this.searchContainer = document.querySelector('.search-container');
 
-        /* Country Grid */
+        /*
+        Country Grid
+        */
+
         this.countryContainer = document.querySelector('.country-container');
 
-        /* Footer */
+        /*
+        Footer
+        */
+
         this.footerContainer = document.querySelector('.site-footer');
 
-        /* Search Form */
+        /*
+        Search Form
+        */
+
         this.searchForm = document.querySelector('.search-form');
+
+        /*
+        Search Input
+        */
 
         this.searchInput = document.querySelector('#country-search');
 
+        /*
+        Region Filter
+        */
+
         this.regionFilter = document.querySelector('#region-filter');
 
-        // Country details
+        /*
+        Country Details
+        */
+
         this.detailsContainer = document.querySelector('.details-container');
-
-        /* Exchange Rate */
-
-        this.exchangeRateContainer = document.querySelector(
-            '.exchange-rate-container'
-        );
     }
 
-    /* Creates and renders a component.
-    @param {HTMLElement} container - The DOM container.
-    @param {Class} Component - The component class.
+    /*
+    ======================================================
+    Render Component
+    ======================================================
     */
+
     renderComponent(container, Component) {
         if (!container) {
-            return;
+            return null;
         }
 
         const component = new Component(container);
+
         component.render();
+
         return component;
     }
 
-    // Bind Events: Handles user interactions.
+    /*
+    ======================================================
+    Bind Application Events
+    ======================================================
+    */
+
     bindEvents() {
+        /*
+        Make sure the search form exists.
+        */
+
         if (!this.searchForm) {
             return;
         }
 
-        // search form listener
+        /*
+        ==================================================
+        Search Form
+        ==================================================
+        */
+
         this.searchForm.addEventListener('submit', async (event) => {
             event.preventDefault();
+
             const searchValue = this.searchInput.value.trim();
+
+            /*
+                Do nothing if search is empty.
+                */
 
             if (!searchValue) {
                 return;
             }
 
-            // const results = await this.countrySearch.searchByName(searchValue);
-            // this.countryGrid.displayCountries(results);
+            /*
+                Make sure we are on the
+                Home/Search view.
+                */
+
+            this.showHomeView();
+
             try {
+                /*
+                    Display loading message.
+                    */
+
                 this.countryGrid.showLoading();
+
+                /*
+                    Clear selected country.
+                    */
+
                 this.state.selectedCountry = null;
 
-                this.countryDetails.render();
+                /*
+                    Search for country.
+                    */
 
                 const results =
                     await this.countrySearch.searchByName(searchValue);
+
+                /*
+                    Save search results.
+                    */
+
+                this.state.searchResults = results;
+
+                /*
+                    Display results.
+                    */
+
                 this.countryGrid.displayCountries(results);
-            } catch {
+            } catch (error) {
+                console.error('Country search failed:', error);
+
                 this.countryGrid.showError(
                     'Unable to load countries. Please try again.'
                 );
             }
         });
 
-        // region filter listener
-        this.regionFilter.addEventListener('change', async () => {
-            const region = this.regionFilter.value;
+        /*
+        ==================================================
+        Region Filter
+        ==================================================
+        */
 
-            try {
-                this.countryGrid.showLoading();
-                this.state.selectedCountry = null;
+        if (this.regionFilter) {
+            this.regionFilter.addEventListener('change', async () => {
+                const region = this.regionFilter.value;
 
-                this.countryDetails.render();
+                /*
+                    Return to Home/Search view.
+                    */
 
-                this.searchInput.value = '';
+                this.showHomeView();
 
-                this.state.selectedCountry = null;
-                this.countryDetails.render();
+                try {
+                    /*
+                        Show loading.
+                        */
 
-                const results = await this.countrySearch.searchByRegion(region);
-                this.countryGrid.displayCountries(results);
-            } catch {
-                this.countryGrid.showError(
-                    'Unable to load countries. Please try again.'
-                );
-            }
-        });
+                    this.countryGrid.showLoading();
+
+                    /*
+                        Clear selected country.
+                        */
+
+                    this.state.selectedCountry = null;
+
+                    /*
+                        Clear search input.
+                        */
+
+                    if (this.searchInput) {
+                        this.searchInput.value = '';
+                    }
+
+                    /*
+                        Search by region.
+                        */
+
+                    const results =
+                        await this.countrySearch.searchByRegion(region);
+
+                    /*
+                        Save results.
+                        */
+
+                    this.state.searchResults = results;
+
+                    /*
+                        Display results.
+                        */
+
+                    this.countryGrid.displayCountries(results);
+                } catch (error) {
+                    console.error('Region search failed:', error);
+
+                    this.countryGrid.showError(
+                        'Unable to load countries. Please try again.'
+                    );
+                }
+            });
+        }
     }
 }

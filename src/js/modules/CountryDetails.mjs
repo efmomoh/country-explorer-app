@@ -27,6 +27,7 @@ export default class CountryDetails {
     constructor(container, exchangeRateService) {
         this.container = container;
         this.exchangeRateService = exchangeRateService;
+        this.onBackToSearch = null;
     }
 
     render(country) {
@@ -38,6 +39,14 @@ export default class CountryDetails {
 
         this.container.innerHTML = `
             <section class="country-details">
+
+            <button
+    type="button"
+    class="back-to-search"
+>
+    ← Back to Search
+</button>
+
                 <img
                     src="${country.flag}"
                     alt="Flag of ${country.name}"
@@ -94,6 +103,16 @@ export default class CountryDetails {
         `;
 
         this.loadExchangeRate(country);
+
+        const backButton = this.container.querySelector('.back-to-search');
+
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                if (this.onBackToSearch) {
+                    this.onBackToSearch();
+                }
+            });
+        }
     }
 
     /*
@@ -177,5 +196,10 @@ Example:
 
         `;
         }
+    }
+
+    // back to search callback
+    setBackToSearchCallback(callback) {
+        this.onBackToSearch = callback;
     }
 }
