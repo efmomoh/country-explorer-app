@@ -5,15 +5,14 @@ Country Card Component Module
 
 Purpose:
 ---------
-Displays information for a single country.
+Creates the HTML for a single country card.
 
 Responsibilities:
 -----------------
-- Display country flag
-- Display country name
-- Display capital city
-- Display region
-- Display population
+- Display country information
+- Display the country flag
+- Display basic country details
+- Display a Favorite button
 
 Author:
 Enssah Fayia Momoh
@@ -25,25 +24,27 @@ WDD330 Final Project - Country Explorer App
 */
 
 export default class CountryCard {
-    constructor(country) {
+    /* Receives one Country model object. */
+
+    constructor(country, isFavorite = false) {
         this.country = country;
+        this.isFavorite = isFavorite;
     }
+
+    /* Creates the HTML for a country card.
+    Returns: HTML string */
 
     render() {
         return `
-        <article class="country-card">
+            <article class="country-card">
 
-            <img
-                class="country-flag"
-                src="${this.country.flag}"
-                alt="Flag of ${this.country.name}"
-            >
+                <img
+                    src="${this.country.flag}"
+                    alt="Flag of ${this.country.name}"
+                    class="country-flag"
+                >
 
-            <div class="country-card-content">
-
-                <h3 class="country-name">
-                    ${this.country.name}
-                </h3>
+                <h3>${this.country.name}</h3>
 
                 <p>
                     <strong>Capital:</strong>
@@ -60,9 +61,10 @@ export default class CountryCard {
                     ${this.country.population.toLocaleString()}
                 </p>
 
-            </div>
-
-        </article>
+                <button type="button" class="favorite-button">
+                ${this.isFavorite ? '★ Remove Favorite' : '★ Add Favorite'}
+                </button>
+            </article>
         `;
     }
 }

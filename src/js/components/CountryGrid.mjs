@@ -27,12 +27,14 @@ WDD330 Final Project - Country Explorer App
 import CountryCard from './CountryCard.mjs';
 
 export default class CountryGrid {
-    constructor(container) {
+    constructor(container, favoriteManager) {
         this.container = container;
+        this.favoriteManager = favoriteManager;
         // Stores the grid element after rendering
         this.grid = null;
         // Callback function provided by App
         this.onCountrySelected = null;
+        this.onFavoriteSelected = null;
     }
 
     /* Render country grid structure  */
@@ -56,6 +58,12 @@ export default class CountryGrid {
         this.onCountrySelected = callback;
     }
 
+    /* Allows CountryExplorerApp to provide a favorite selection function */
+
+    setFavoriteSelectedCallback(callback) {
+        this.onFavoriteSelected = callback;
+    }
+
     /* Display country cards
     Receives: Array of Country model objects
     */
@@ -70,7 +78,8 @@ export default class CountryGrid {
 
         this.grid.innerHTML = countries
             .map((country, index) => {
-                const card = new CountryCard(country);
+                const isFavorite = this.favoriteManager.isFavorite(country);
+                const card = new CountryCard(country, isFavorite);
                 return `
 
                 <div class="country-card-wrapper" data-index="${index}">
@@ -83,15 +92,39 @@ export default class CountryGrid {
     }
 
     /*Add click events to country cards*/
+    /*
+Adds click events to every country card.
+
+Handles:
+---------
+- Country selection
+- Favorite button click
+*/
+
     addCardEvents(countries) {
         const cards = this.grid.querySelectorAll('.country-card-wrapper');
-        cards.forEach((card) => {
-            card.addEventListener('click', () => {
-                const index = card.dataset.index;
-                const selectedCountry = countries[index];
 
+        cards.forEach((card) => {
+            const index = card.dataset.index;
+            const selectedCountry = countries[index];
+
+            /*  Clicking anywhere on the card  opens the country details.  */
+
+            card.addEventListener('click', () => {
                 if (this.onCountrySelected) {
                     this.onCountrySelected(selectedCountry);
+                }
+            });
+
+            /* Clicking the Favorite button should NOT open the details.
+            stopPropagation() prevents the card click event from firing.*/
+
+            const favoriteButton = card.querySelector('.favorite-button');
+
+            favoriteButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (this.onFavoriteSelected) {
+                    this.onFavoriteSelected(selectedCountry);
                 }
             });
         });

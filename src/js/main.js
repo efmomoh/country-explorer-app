@@ -13,6 +13,7 @@ import CountryExplorerApp from './CountryExplorerApp.mjs';
 // import './api-test.mjs';
 // import './api-country-model-test.mjs';
 // import './search-test.mjs';
+// import './favorites-test.mjs';
 
 // Create the Application Object
 // eslint-disable-next-line
